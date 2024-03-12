@@ -18,8 +18,7 @@ const withMDX = require('@next/mdx')({
 const nextConfig = {
   // output: 'export',
   images: {
-    formats: ['image/avif', 'image/webp'],
-    domains: ['i.ibb.co']
+    formats: ['image/avif', 'image/webp']
     // unoptimized: true,
   },
   // Configure pageExtensions to include md and mdx
@@ -31,37 +30,7 @@ const nextConfig = {
     includePaths: [path.join(__dirname, 'app')]
   },
   // output: {path: path.resolve(__dirname, 'static'),},
-  webpack: (config, options) => {
-    //   // config.output.filename = '[path][name].[hash].[ext]';
-    //   // config.output.path = path.resolve(__dirname, '.next/')
-    //   // config.output.publicPath = '/.next/'
-    const nextImageLoader = config.module.rules.find(rule => rule.loader === 'next-image-loader')
-    // config.module.rules.push({
-    //   ...nextImageLoader,
-    //   test: /\.(webm|pdf|txt|csv)/,
-    // })
-    nextImageLoader.loader = path.join(process.cwd(), 'server/imageLoader.js')
-    // config.module.rules.push({
-    //   test: /\.(webm|pdf|txt|csv)/,
-    //   type: 'asset/resource',
-    //   // generator: {
-    //   //   filename: 'out/_next/static/[path][name].[hash].[ext]'
-    //   //   //   filename: `[name][ext]`
-    //   // }
-    // })
-    config.module.rules.push({
-      test: /\.(webm|pdf|txt|csv)/,
-      use: [{
-        loader: path.join(process.cwd(), 'server/fileLoader.js')
-      }]
-      // type: 'asset/resource',
-      // generator: {
-      //     filename: '.next/static/[path][name].[hash].[ext]'
-      // },
-    })
-    //
-    return config
-  },
+
   async headers () {
     return [
       {
