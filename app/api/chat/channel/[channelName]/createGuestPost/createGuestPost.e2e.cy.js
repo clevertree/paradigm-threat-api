@@ -14,6 +14,8 @@ describe('test API routes', () => {
         // expect(response.body.post).to.be.eq(15)
       })
     })
+
+
     it('fails to create a posts in development chat', () => {
       cy.request({
         method: 'POST',
@@ -29,6 +31,15 @@ describe('test API routes', () => {
         expect(response.body.channel).to.eq('development')
         expect(response.body.postInfo).to.eq(null)
         expect(response.body.error.issues.length).to.be.greaterThan(0)
+        // expect(response.body.post).to.be.eq(15)
+      })
+    })
+
+
+    it('send preflight OPTIONS for createGuestPost', () => {
+      cy.request('OPTIONS', '/api/chat/channel/development/createGuestPost', {
+      }).then((response) => {
+        expect(response.status).to.eq(200)
         // expect(response.body.post).to.be.eq(15)
       })
     })

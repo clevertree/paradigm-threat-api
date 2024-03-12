@@ -1,0 +1,33 @@
+// Imports
+// ========================================================
+import { NextResponse, type NextRequest } from "next/server";
+
+// Middleware
+// ========================================================
+// This function can be marked `async` if using `await` inside
+export async function middleware(request: NextRequest) {
+  // Response
+  const response = NextResponse.next();
+
+  // Allowed origins check
+  const origin = request.headers.get('origin') ?? '';
+    response.headers.set('Access-Control-Allow-Origin', origin || "*");
+
+  // specific logic for the preflight request
+  if (request.method === 'OPTIONS') {
+    return NextResponse.json({ message: 'Preflight' }, { status: 200 })
+  }
+  // Set default CORS headers
+  response.headers.set("Access-Control-Allow-Credentials", 'true');
+  response.headers.set("Access-Control-Allow-Methods", 'GET,DELETE,PATCH,POST,PUT');
+  response.headers.set("Access-Control-Allow-Headers",  `X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version`);
+  // response.headers.set("Access-Control-Expose-Headers", corsOptions.exposedHeaders.join(","));
+  // response.headers.set("Access-Control-Max-Age", corsOptions.maxAge?.toString() ?? "");
+  // Return
+  return response;
+}
+
+// See "Matching Paths" below to learn more
+export const config = {
+  matcher: "/api/:path*",
+};

@@ -2,8 +2,8 @@
 import {Client4} from 'mattermost-redux/client';
 
 const POSTS_PER_PAGE = 15
-if(!process.env.NEXT_PUBLIC_CHAT_URL) throw new Error("Invalid NEXT_PUBLIC_CHAT_URL")
-if(!process.env.NEXT_PRIVATE_CHAT_BOT_TOKEN) throw new Error("Invalid NEXT_PRIVATE_CHAT_BOT_TOKEN")
+// if(!process.env.NEXT_PUBLIC_CHAT_URL) throw new Error("Invalid NEXT_PUBLIC_CHAT_URL")
+// if(!process.env.NEXT_PRIVATE_CHAT_BOT_TOKEN) throw new Error("Invalid NEXT_PRIVATE_CHAT_BOT_TOKEN")
 Client4.setUrl(`${process.env.NEXT_PUBLIC_CHAT_URL}`);
 Client4.setToken(`${process.env.NEXT_PRIVATE_CHAT_BOT_TOKEN}`);
 
@@ -27,6 +27,11 @@ export async function GET(
             params
         }, {
             status: 200,
+            headers: {
+                'Access-Control-Allow-Origin': req.headers.get('origin') || '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            }
         })
 
     } catch (error: any) {
