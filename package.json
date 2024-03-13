@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
     "export": "next export",
     "start": "next start -p 8081",
@@ -30,7 +30,7 @@
     "mattermost": "^3.4.0",
     "mattermost-redux": "^5.33.1",
     "mime": "^3.0.0",
-    "next": "v13.5.5-canary.16",
+    "next": "latest",
     "postcss": "^8.4.29",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

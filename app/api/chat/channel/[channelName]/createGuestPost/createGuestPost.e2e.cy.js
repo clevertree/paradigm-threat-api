@@ -15,7 +15,6 @@ describe('test API routes', () => {
       })
     })
 
-
     it('fails to create a posts in development chat', () => {
       cy.request({
         method: 'POST',
@@ -34,7 +33,6 @@ describe('test API routes', () => {
         // expect(response.body.post).to.be.eq(15)
       })
     })
-
 
     it('send preflight OPTIONS for createGuestPost', () => {
       cy.request('OPTIONS', '/api/chat/channel/development/createGuestPost', {

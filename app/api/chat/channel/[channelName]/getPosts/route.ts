@@ -7,6 +7,8 @@ const POSTS_PER_PAGE = 15
 Client4.setUrl(`${process.env.NEXT_PUBLIC_CHAT_URL}`);
 Client4.setToken(`${process.env.NEXT_PRIVATE_CHAT_BOT_TOKEN}`);
 
+export const revalidate = 60 // revalidate every minute
+
 type Data = {
     channel: string,
     posts: object[],
@@ -20,17 +22,17 @@ export async function GET(
 ) {
     try {
         const channelName = `${params.channelName}`;
-        const posts = await getChannelPosts(channelName)
+
+        const postsAndUsers = await getChannelPosts(channelName)
         return Response.json({
             channel: channelName,
-            posts,
-            params
+            posts: postsAndUsers,
+            params,
+            url: req.url
         }, {
             status: 200,
             headers: {
-                'Access-Control-Allow-Origin': req.headers.get('origin') || '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Cache-Control':'s-maxage=60, stale-while-revalidate',
             }
         })
 
@@ -39,7 +41,8 @@ export async function GET(
         return Response.json({
             channel: "", posts: [],
             error,
-            params
+            params,
+            url: req.url
         }, {
             status: 400,
         })
@@ -78,16 +81,18 @@ async function getChannelPosts(channelName: string) {
     const users = await getMMUserList();
     const channelID = await getChannelID(channelName);
     // const teamID = await getDefaultTeamID();
-    const posts = await Client4.getPosts(channelID, 0, POSTS_PER_PAGE)
-    return posts.order.reverse().map(postID => {
+    const apiResponse = await Client4.getPosts(channelID, 0, POSTS_PER_PAGE)
+    const postsAndUsers =  [...apiResponse.order].reverse().map(postID => {
         // @ts-ignore
-        const postInfo = posts.posts[postID];
+        const postInfo = apiResponse.posts[postID];
         const username = users.find((userInfo: any) => userInfo.id === postInfo.user_id).username;
         return {
             username,
             message: postInfo.message,
+            create_at: postInfo.create_at
         }
     })
+    return postsAndUsers
 }
 
 
