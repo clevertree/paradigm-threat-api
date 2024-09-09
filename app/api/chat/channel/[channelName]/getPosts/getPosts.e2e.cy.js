@@ -4,7 +4,7 @@ describe('test API routes', () => {
       cy.request('GET', '/api/chat/channel/general/getPosts').then((response) => {
         expect(response.status).to.eq(200)
         expect(response.body.channel).to.eq('general')
-        expect(response.body.posts.length).to.be.eq(15)
+        expect(response.body.posts.length).to.be.eq(25)
       })
     })
   })

@@ -4,13 +4,14 @@ describe('test API routes', () => {
   context('POST /api/chat/channel/development/createGuestPost', () => {
     it('create a posts in development chat', () => {
       cy.request('POST', '/api/chat/channel/development/createGuestPost', {
-        message: 'This is a test message from a cypress e2e test',
+        content: 'This is a test message from a cypress e2e test',
         username: 'cypress',
         mode: 'test'
       }).then((response) => {
         expect(response.status).to.eq(200)
         expect(response.body.channel).to.eq('development')
-        expect(response.body.postInfo.message).to.eq('*cypress says*: This is a test message from a cypress e2e test')
+        expect(response.body.username).to.eq('cypress')
+        expect(response.body.content).to.eq('This is a test message from a cypress e2e test')
         // expect(response.body.post).to.be.eq(15)
       })
     })
@@ -21,7 +22,7 @@ describe('test API routes', () => {
         url: '/api/chat/channel/development/createGuestPost',
         failOnStatusCode: false,
         body: {
-          message: '',
+          content: '',
           username: 'cypress',
           mode: 'test'
         }
@@ -35,8 +36,7 @@ describe('test API routes', () => {
     })
 
     it('send preflight OPTIONS for createGuestPost', () => {
-      cy.request('OPTIONS', '/api/chat/channel/development/createGuestPost', {
-      }).then((response) => {
+      cy.request('OPTIONS', '/api/chat/channel/development/createGuestPost', {}).then((response) => {
         expect(response.status).to.eq(200)
         // expect(response.body.post).to.be.eq(15)
       })

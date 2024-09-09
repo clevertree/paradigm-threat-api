@@ -1,24 +1,22 @@
 import {z} from 'zod';
-import {Client4} from 'mattermost-redux/client';
+import {deletePost, getChannelInfo, getOrCreateUserInfo, getUserInfo, insertPost} from "@/app/api/chat/client";
 
-Client4.setUrl(`${process.env.NEXT_PUBLIC_CHAT_URL}`);
-Client4.setToken(`${process.env.NEXT_PRIVATE_CHAT_BOT_TOKEN}`);
 
 type responseBody = {
     channel: string,
-    message: string,
+    content: string,
     // ipAddress: string,
     postInfo: object | null,
     error?: string
 }
 
 type RequestData = {
-    message: string,
+    content: string,
     username: string,
     mode: string | undefined
 }
 const RequestDataValidation = z.object({
-    message: z.string().min(1).max(256),
+    content: z.string().min(1).max(256),
     username: z.string().min(1).max(18),
     mode: z.string().optional(),
 });
@@ -30,32 +28,34 @@ export async function POST(
     const {channelName} = params;
     const requestBody = await req.json();
     const responseBody: responseBody = {
-        message: "",
+        content: "",
         channel: channelName,
         // ipAddress: "",
         postInfo: null
     }
     try {
-        const {message, username, mode} = RequestDataValidation.parse(requestBody) as RequestData;
+        const {content, username, mode} = RequestDataValidation.parse(requestBody) as RequestData;
         // const forwarded = `${req.headers["x-forwarded-for"]}`
         // const ipAddress: string = forwarded ? forwarded.split(/, /)[0] : `${req.socket.remoteAddress}`
 
-        const messageWithUsername = `*${username} says*: ${message}`
-        const channel_id = await getChannelID(channelName);
-
-        // @ts-ignore
-        const postInfo = await Client4.createPost({
+        // const messageWithUsername = `*${username} says*: ${message}`
+        const {id: channel_id} = await getChannelInfo(channelName);
+        const {id: user_id} = await getOrCreateUserInfo(username);
+        const postInfo = await insertPost({
+            id: -1,
             channel_id,
-            message: messageWithUsername
+            user_id,
+            content,
+            created: new Date().toISOString()
         })
 
+
         if (mode === 'test') {
-            const deletePostResult = await Client4.deletePost(postInfo.id)
+            await deletePost(postInfo.id);
         }
         return Response.json({
             ...responseBody,
-            message: messageWithUsername,
-            postInfo,
+            ...postInfo,
         }, {
             status: 200,
             headers: {
@@ -76,31 +76,3 @@ export async function POST(
         })
     }
 }
-
-
-let defaultTeamID: any = null;
-
-async function getDefaultTeamID() {
-    if (defaultTeamID === null) {
-        const teams = await Client4.getTeams()
-        // @ts-ignore
-        defaultTeamID = teams[0].id;
-    }
-    return defaultTeamID;
-}
-
-let mmChannelList: any = null
-
-async function getMMChannelList() {
-    if (mmChannelList === null) {
-        const team_id = await getDefaultTeamID();
-        mmChannelList = await Client4.getChannels(team_id);
-    }
-    return mmChannelList;
-}
-
-async function getChannelID(channelName: string) {
-    const channels = await getMMChannelList()
-    return channels.find((channelInfo: any) => channelInfo.name === channelName).id;
-}
-
