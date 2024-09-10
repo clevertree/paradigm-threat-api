@@ -1,6 +1,7 @@
 import {z} from 'zod';
 import {deletePost, getChannelInfo, getOrCreateUserInfo, getUserInfo, insertPost} from "@/app/api/chat/client";
 
+export const dynamic = 'force-dynamic';
 
 type responseBody = {
     channel: string,

@@ -43,6 +43,13 @@ export async function getChannelInfo(channelName: string) {
     return rows[0] as ChannelInfo
 }
 
+export async function getChannelList() {
+    const {rows} = await sql`SELECT *
+                             FROM channels c;`
+
+    return rows as Array<ChannelInfo>
+}
+
 
 export async function insertChannel({
                                         name,

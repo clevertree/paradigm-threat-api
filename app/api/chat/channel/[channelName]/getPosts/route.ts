@@ -1,8 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {getChannelPosts} from "@/app/api/chat/client";
 
-export const revalidate = 60 // revalidate every minute
-
+export const dynamic = 'force-dynamic';
+export const revalidate = 0 // don't revalidate
+// TODO: import { unstable_cache } from 'next/cache'
 export async function GET(
     req: Request,
     {params}: { params: { channelName: string } }
@@ -18,9 +19,9 @@ export async function GET(
             url: req.url
         }, {
             status: 200,
-            // headers: {
-            //     'Cache-Control': 's-maxage=60, stale-while-revalidate',
-            // }
+            headers: {
+                'Cache-Control': 'no-store',
+            }
         })
 
     } catch (error: any) {
