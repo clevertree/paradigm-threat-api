@@ -1,4 +1,4 @@
-import {getChannelList} from "@/app/api/chat/client";
+import {getChannelList} from "@/app/api/chat/clientDB";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 60 // revalidate every minute

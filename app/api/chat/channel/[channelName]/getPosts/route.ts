@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import {getChannelPosts} from "@/app/api/chat/client";
+import {getChannelPosts} from "@/app/api/chat/clientDB";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0 // don't revalidate

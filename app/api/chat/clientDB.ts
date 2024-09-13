@@ -1,5 +1,4 @@
 import {sql} from "@vercel/postgres";
-import {Post} from "mattermost-redux/types/posts";
 
 export interface ChannelInfo {
     id: number,
@@ -30,7 +29,7 @@ export async function getChannelPosts(channelName: string, limit: number = 25) {
                                       JOIN users u ON p.user_id = u.id
                              WHERE c.name = ${channelName}
                              ORDER BY p.created DESC
-                                 LIMIT ${limit};`
+                             LIMIT ${limit};`
 
     return rows as Array<PostInfo>
 }
@@ -57,12 +56,13 @@ export async function insertChannel({
                                     }: ChannelInfo) {
     await sql`INSERT
               INTO channels (name, description)
-              VALUES (${name}, ${description}) ON CONFLICT (name) DO
-    UPDATE SET description = ${description};`;
+              VALUES (${name}, ${description})
+              ON CONFLICT (name) DO UPDATE SET description = ${description};`;
 
     const {rows, fields} = await sql`SELECT *
                                      FROM channels
-                                     WHERE name = ${name} LIMIT 1;`;
+                                     WHERE name = ${name}
+                                     LIMIT 1;`;
     return rows[0] as ChannelInfo
 }
 
@@ -70,12 +70,14 @@ export async function insertUser({username, full_name, email}: UserInfo) {
 
     await sql`INSERT
               INTO users (username, full_name, email)
-              VALUES (${username}, ${full_name}, ${email}) ON CONFLICT (username) DO
-    UPDATE SET full_name = ${full_name}, email = ${email};`;
+              VALUES (${username}, ${full_name}, ${email})
+              ON CONFLICT (username) DO UPDATE SET full_name = ${full_name},
+                                                   email     = ${email};`;
 
     const {rows, fields} = await sql`SELECT *
                                      FROM users
-                                     WHERE username = ${username} LIMIT 1;`;
+                                     WHERE username = ${username}
+                                     LIMIT 1;`;
     return rows[0] as UserInfo
 }
 
@@ -101,14 +103,16 @@ export async function insertPost({user_id, channel_id, content, created}: PostIn
 
     const res = await sql`INSERT
                           INTO posts (user_id, channel_id, content, created)
-                          VALUES (${user_id}, ${channel_id}, ${content}, ${created}) RETURNING id;`;
+                          VALUES (${user_id}, ${channel_id}, ${content}, ${created})
+                          RETURNING id;`;
     const {id} = res.rows[0];
 
     const {rows, fields} = await sql`SELECT p.*, u.username, c.name as channel_name
                                      FROM posts p
                                               JOIN channels c ON p.channel_id = c.id
                                               JOIN users u ON p.user_id = u.id
-                                     WHERE p.id = ${id} LIMIT 1;`;
+                                     WHERE p.id = ${id}
+                                     LIMIT 1;`;
     const postInfo = rows[0] as PostInfo;
     if (!postInfo)
         throw new Error("Unable to insert post: " + id);

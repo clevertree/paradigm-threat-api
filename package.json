@@ -28,8 +28,6 @@
     "eslint": "^8.49.0",
     "eslint-config-next": "^13.4.19",
     "markdown-to-jsx": "^7.3.2",
-    "mattermost": "^3.4.0",
-    "mattermost-redux": "^5.33.1",
     "mime": "^3.0.0",
     "next": "latest",
     "postcss": "^8.4.29",

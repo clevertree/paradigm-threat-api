@@ -1,5 +1,5 @@
 import {z} from 'zod';
-import {deletePost, getChannelInfo, getOrCreateUserInfo, getUserInfo, insertPost} from "@/app/api/chat/client";
+import {deletePost, getChannelInfo, getOrCreateUserInfo, getUserInfo, insertPost} from "@/app/api/chat/clientDB";
 
 export const dynamic = 'force-dynamic';
 
