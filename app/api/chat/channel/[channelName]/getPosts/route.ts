@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import {getChannelPosts} from "@/app/api/chat/clientDB";
+import getCORSHeaders from "@/app/api/cors";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0 // don't revalidate
@@ -19,9 +20,7 @@ export async function GET(
             url: req.url
         }, {
             status: 200,
-            headers: {
-                'Cache-Control': 'no-store',
-            }
+            headers: getCORSHeaders(req)
         })
 
     } catch (error: any) {
@@ -33,6 +32,7 @@ export async function GET(
             url: req.url
         }, {
             status: 400,
+            headers: getCORSHeaders(req)
         })
     }
 }

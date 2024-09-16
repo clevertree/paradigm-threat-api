@@ -1,5 +1,6 @@
 import {z} from 'zod';
 import {deletePost, getChannelInfo, getOrCreateUserInfo, getUserInfo, insertPost} from "@/app/api/chat/clientDB";
+import getCORSHeaders from "@/app/api/cors";
 
 export const dynamic = 'force-dynamic';
 
@@ -59,11 +60,7 @@ export async function POST(
             ...postInfo,
         }, {
             status: 200,
-            headers: {
-                'Access-Control-Allow-Origin': req.headers.get('origin') || '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-            }
+            headers: getCORSHeaders(req)
         })
 
     } catch (error: any) {
@@ -74,6 +71,14 @@ export async function POST(
             error,
         }, {
             status: 400,
+            headers: getCORSHeaders(req)
         })
     }
+}
+
+export async function OPTIONS(req: Request) {
+    return new Response('Preflight!', {
+        status: 200,
+        headers: getCORSHeaders(req)
+    })
 }

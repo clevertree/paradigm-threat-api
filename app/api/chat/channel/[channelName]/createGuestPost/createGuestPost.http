@@ -1,0 +1,15 @@
+### OPTIONS request to example server
+OPTIONS http://localhost:3001/api/chat/channel/development/createGuestPost
+
+
+### POST request to example server
+POST http://localhost:3001/api/chat/channel/development/createGuestPost
+Content-Type: application/json
+
+{
+  "content": "This is a test message from a cypress e2e test",
+  "username": "cypress",
+  "mode": "test"
+}
+
+###
