@@ -18,7 +18,7 @@ type RequestData = {
     mode: string | undefined
 }
 const RequestDataValidation = z.object({
-    content: z.string().min(1).max(256),
+    content: z.string().min(1).max(1024),
     username: z.string().min(1).max(18),
     mode: z.string().optional(),
 });
