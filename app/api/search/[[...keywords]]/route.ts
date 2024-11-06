@@ -5,7 +5,7 @@ export const revalidate = 60 // revalidate every minute
 
 export async function GET(
     req: Request,
-    {params: {keywords}}: { params: { keywords: string[] } }
+    {params: {keywords}}: any
 ) {
     try {
         const {searchParams} = new URL(req.url);

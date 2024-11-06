@@ -1,6 +1,7 @@
 import {z} from 'zod';
 import {deletePost, getChannelInfo, getOrCreateUserInfo, getUserInfo, insertPost} from "@/app/api/chat/clientDB";
 import getCORSHeaders from "@/app/api/cors";
+import {NextRequest} from "next/server";
 
 export const dynamic = 'force-dynamic';
 
@@ -24,10 +25,9 @@ const RequestDataValidation = z.object({
 });
 
 export async function POST(
-    req: Request,
-    {params}: { params: { channelName: string } }
+    req: NextRequest,
+    {params:{channelName}}: any
 ) {
-    const {channelName} = params;
     const requestBody = await req.json();
     const responseBody: responseBody = {
         content: "",

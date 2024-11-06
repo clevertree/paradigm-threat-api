@@ -7,16 +7,13 @@ export const revalidate = 0 // don't revalidate
 // TODO: import { unstable_cache } from 'next/cache'
 export async function GET(
     req: Request,
-    {params}: { params: { channelName: string } }
+    {params:{channelName}}: any
 ) {
     try {
-        const channelName = `${params.channelName}`;
-
         const postsAndUsers = await getChannelPosts(channelName)
         return Response.json({
             channel: channelName,
             posts: postsAndUsers,
-            params,
             url: req.url
         }, {
             status: 200,
@@ -28,7 +25,6 @@ export async function GET(
         return Response.json({
             channel: "", posts: [],
             error,
-            params,
             url: req.url
         }, {
             status: 400,

@@ -6,7 +6,6 @@ export const revalidate = 60 // revalidate every minute
 
 export async function GET(
     req: Request,
-    {params}: { params: {} }
 ) {
     try {
 
